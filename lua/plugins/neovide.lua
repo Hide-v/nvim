@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 ---@diagnostic disable: undefined-field
 -- Neovide Configuration
 
@@ -15,6 +16,7 @@ return {
       vim.o.guifont = "Maple_Mono_NF_CN:h10"
 
       -- 透明度与间距
+      vim.g.neovide_theme = "auto"
       vim.g.neovide_opacity = 0.85
       vim.g.neovide_scale_factor = 1.0
       vim.g.neovide_padding_left = 5
