@@ -1,9 +1,8 @@
 ---@diagnostic disable: undefined-global
 local components = require("config.heirline.components")
-local palette = require("catppuccin.palettes").get_palette()
 
 return {
-  hl = { fg = palette.text, bg = palette.base },
+  hl = { fg = "bright_bg", bg = "bright_bg" },
   -- 1. 模式指示器 (带有右侧间距)
   components.RightPadding(components.ViMode, 1),
 

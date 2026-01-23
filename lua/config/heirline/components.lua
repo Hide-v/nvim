@@ -1,18 +1,6 @@
 ---@diagnostic disable: undefined-field
 ---@diagnostic disable: undefined-global
-local palette = require("catppuccin.palettes").get_palette()
-local utils = require("heirline.utils")
 local conditions = require("heirline.conditions")
-local dim_color = palette.surface1
-local colors = {
-  diag_warn = utils.get_highlight("DiagnosticWarn").fg,
-  diag_error = utils.get_highlight("DiagnosticError").fg,
-  diag_hint = utils.get_highlight("DiagnosticHint").fg,
-  diag_info = utils.get_highlight("DiagnosticInfo").fg,
-  git_del = utils.get_highlight("diffDeleted").fg,
-  git_add = utils.get_highlight("diffAdded").fg,
-  git_change = utils.get_highlight("diffChanged").fg,
-}
 
 local M = {}
 M.Spacer = { provider = " " }
@@ -47,7 +35,8 @@ M.Ruler = {
   -- %L = number of lines in the buffer
   -- %c = column number
   -- %P = percentage through file of displayed window
-  provider = "%4l,%-3c %P",
+  provider = "%4l/%-3c %P",
+  hl = { fg = "fg", bg = "bg" },
 }
 M.ScrollBar = {
   static = {
@@ -59,7 +48,7 @@ M.ScrollBar = {
     local i = math.floor((curr_line - 1) / lines * #self.sbar) + 1
     return string.rep(self.sbar[i], 2)
   end,
-  hl = { fg = palette.yellow, bg = palette.base },
+  hl = { fg = "orange", bg = "bg" },
 }
 
 M.ViMode = {
@@ -104,21 +93,14 @@ M.ViMode = {
       t = "T",
     },
     mode_colors = {
-      n = palette.blue,
-      nt = palette.blue,
-
-      i = palette.green,
-      v = palette.mauve,
-      V = palette.mauve,
-      ["\22"] = palette.mauve,
-      c = palette.sky,
-      s = palette.pink,
-      S = palette.pink,
-      ["\19"] = palette.pink,
-      R = palette.peach,
-      r = palette.peach,
-      ["!"] = palette.red,
-      t = palette.blue,
+      n = "normal",
+      i = "insert",
+      v = "visual",
+      V = "visual",
+      ["\22"] = "visual",
+      c = "command",
+      R = "replace",
+      t = "insert",
     },
   },
   provider = function(self)
@@ -126,7 +108,7 @@ M.ViMode = {
   end,
   hl = function(self)
     local mode = self.mode:sub(1, 1) -- get only the first mode character
-    return { fg = palette.base, bg = self.mode_colors[mode], bold = true }
+    return { fg = "bg", bg = self.mode_colors[mode], bold = true }
   end,
   update = {
     "ModeChanged",
@@ -148,7 +130,7 @@ M.Git = {
   end,
 
   hl = function(self)
-    return { fg = self.has_changes and palette.maroon or dim_color }
+    return { fg = self.has_changes and "orange" or "gray" }
   end,
 
   { -- git branch name
@@ -171,21 +153,21 @@ M.Git = {
       local count = self.status_dict.added or 0
       return count > 0 and ("+" .. count)
     end,
-    hl = { fg = colors.git_add },
+    hl = { fg = "git_added" },
   },
   {
     provider = function(self)
       local count = self.status_dict.removed or 0
       return count > 0 and ("-" .. count)
     end,
-    hl = { fg = colors.git_del },
+    hl = { fg = "git_removed" },
   },
   {
     provider = function(self)
       local count = self.status_dict.changed or 0
       return count > 0 and ("~" .. count)
     end,
-    hl = { fg = colors.git_change },
+    hl = { fg = "git_changed" },
   },
   {
     condition = function(self)
@@ -206,10 +188,6 @@ M.LSPActive = {
   condition = conditions.lsp_attached,
   update = { "LspAttach", "LspDetach" },
 
-  -- You can keep it simple,
-  -- provider = " [LSP]",
-
-  -- Or complicate things a bit and get the servers names
   provider = function()
     local names = {}
     for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
@@ -217,13 +195,8 @@ M.LSPActive = {
     end
     return " [" .. table.concat(names, " ") .. "]"
   end,
-  hl = { fg = palette.green, bold = true },
+  hl = { fg = "green", bold = true },
 }
-
--- M.LSPMessages = {
---   provider = require("lsp-status").status,
---   hl = { fg = "gray" },
--- }
 
 M.Diagnostics = {
   condition = conditions.has_diagnostics,
@@ -256,25 +229,25 @@ M.Diagnostics = {
       -- 0 is just another output, we can decide to print it or not!
       return self.errors > 0 and (self.error_icon .. self.errors .. " ")
     end,
-    hl = { fg = colors.diag_error },
+    hl = { fg = "diag_ERROR" },
   },
   {
     provider = function(self)
       return self.warnings > 0 and (self.warn_icon .. self.warnings .. " ")
     end,
-    hl = { fg = colors.diag_warn },
+    hl = { fg = "diag_WARN" },
   },
   {
     provider = function(self)
       return self.info > 0 and (self.info_icon .. self.info .. " ")
     end,
-    hl = { fg = colors.diag_info },
+    hl = { fg = "diag_INFO" },
   },
   {
     provider = function(self)
       return self.hints > 0 and (self.hint_icon .. self.hints)
     end,
-    hl = { fg = colors.diag_hint },
+    hl = { fg = "diag_HINT" },
   },
   on_click = {
     name = "heirline_diagnostic",
@@ -313,7 +286,7 @@ local FileName = {
     end
     return filename
   end,
-  hl = { fg = palette.text, bold = true },
+  hl = { fg = "fg", bold = true },
 }
 
 -- 3. 文件状态标记 (修改、只读)
@@ -323,14 +296,14 @@ local FileFlags = {
       return vim.bo.modified
     end,
     provider = " ●", -- 或者使用加号 [+]
-    hl = { fg = palette.green },
+    hl = { fg = "green" },
   },
   {
     condition = function()
       return not vim.bo.modifiable or vim.bo.readonly
     end,
     provider = " ",
-    hl = { fg = palette.red },
+    hl = { fg = "red" },
   },
 }
 
