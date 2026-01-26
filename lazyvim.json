@@ -4,7 +4,8 @@
     "lazyvim.plugins.extras.editor.fzf",
     "lazyvim.plugins.extras.lang.clangd",
     "lazyvim.plugins.extras.lang.git",
-    "lazyvim.plugins.extras.lang.go"
+    "lazyvim.plugins.extras.lang.go",
+    "lazyvim.plugins.extras.test.core"
   ],
   "install_version": 8,
   "news": {
