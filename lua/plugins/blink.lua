@@ -51,6 +51,11 @@ return {
     },
 
     completion = {
+      list = {
+        selection = {
+          preselect = false,
+        },
+      },
       documentation = {
         auto_show = false,
         auto_show_delay_ms = 500,
