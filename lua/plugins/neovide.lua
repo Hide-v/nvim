@@ -12,6 +12,23 @@ return {
       if not vim.g.neovide then
         return
       end
+      vim.g.neovide_scale_factor = vim.g.neovide_scale_factor or 1.0
+
+      -- 放大
+      vim.keymap.set({ "n", "v" }, "<C-=>", function()
+        vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1
+      end, { desc = "Neovide Increase Scale" })
+
+      -- 缩小
+      vim.keymap.set({ "n", "v" }, "<C-->", function()
+        vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1
+      end, { desc = "Neovide Decrease Scale" })
+
+      -- 重置
+      vim.keymap.set({ "n", "v" }, "<C-0>", function()
+        vim.g.neovide_scale_factor = 1.0
+      end, { desc = "Neovide Reset Scale" })
+
       -- 1. 基础视觉配置 (全系统通用)
       vim.o.guifont = "Maple_Mono_NF_CN:h10"
 
