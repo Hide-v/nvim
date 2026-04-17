@@ -49,6 +49,7 @@ return {
         scrollbar = get_hl("TypeDef", { fg = "#f9e2af" }).fg,
         blue = "#89b4fa",
         orange = "#fab387",
+        gray = get_hl("Comment", { fg = "#6c7086" }).fg,
       }
 
       return colors
@@ -57,6 +58,8 @@ return {
     vim.opt.cmdheight = 0
     require("heirline").setup({
       statusline = require("config.heirline.statusline"),
+      -- TODO winbar
+      tabline = require("config.heirline.tabline"),
       opts = {
         colors = setup_colors,
       },

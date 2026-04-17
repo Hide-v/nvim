@@ -5,9 +5,23 @@ local conditions = require("heirline.conditions")
 local M = {}
 M.Spacer = { provider = " " }
 M.Fill = { provider = "%=" }
---- 为组件添加右侧间距的包装器
---- @param child table Heirline组件表
---- @param num_space number? 空格数量 (默认为 1)
+
+local FileIcon = {
+  init = function(self)
+    local filename = vim.api.nvim_buf_get_name(0)
+    if _G.MiniIcons then
+      self.icon, self.icon_hl, _ = MiniIcons.get("file", filename)
+    end
+  end,
+  provider = function(self)
+    return self.icon and (self.icon .. " ")
+  end,
+  hl = function(self)
+    return self.icon_hl
+  end,
+}
+M.FileIcon = FileIcon
+
 M.RightPadding = function(child, num_space)
   -- 健壮性检查：如果组件不存在，直接返回空表
   if not child then
@@ -257,22 +271,6 @@ M.Diagnostics = {
   },
 } -- Diagnostics
 
-local FileIcon = {
-  init = function(self)
-    local filename = vim.api.nvim_buf_get_name(0)
-    -- 从 mini.icons 获取图标
-    if _G.MiniIcons then
-      self.icon, self.icon_hl, _ = MiniIcons.get("file", filename)
-    end
-  end,
-  provider = function(self)
-    return self.icon and (self.icon .. " ")
-  end,
-  hl = function(self)
-    return self.icon_hl
-  end,
-}
-
 local FileName = {
   provider = function()
     -- 获取相对路径文件名
@@ -311,11 +309,9 @@ M.FileNameBlock = {
   init = function(self)
     self.filename = vim.api.nvim_buf_get_name(0)
   end,
-  -- 组合图标、名字和标记
   FileIcon,
   FileName,
   FileFlags,
-  -- 当鼠标悬停时显示完整路径
   on_click = {
     callback = function()
       print(vim.api.nvim_buf_get_name(0))
