@@ -1,1 +1,4 @@
-return { { "nvim-lualine/lualine.nvim", enabled = false } }
+return {
+  { "nvim-lualine/lualine.nvim", enabled = false },
+  { "akinsho/bufferline.nvim", enabled = false },
+}
