@@ -24,3 +24,12 @@ set_diagnostic_underline()
 vim.api.nvim_create_autocmd("ColorScheme", {
   callback = set_diagnostic_underline,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "*",
+  callback = function()
+    -- r: 回车时不自动添加注释符
+    -- o: 使用 o 或 O 换行时不自动添加注释符
+    vim.opt_local.formatoptions:remove({ "r", "o" })
+  end,
+})
