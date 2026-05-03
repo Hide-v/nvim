@@ -40,13 +40,6 @@ local TablineOffset = {
   end,
 }
 
-local TablineBufnr = {
-  provider = function(self)
-    return tostring(self.bufnr) .. ". "
-  end,
-  hl = { fg = "gray" },
-}
-
 -- we redefine the filename component, as we probably only want the tail and not the relative path
 local TablineFileName = {
   provider = function(self)
@@ -117,7 +110,6 @@ local TablineFileNameBlock = {
     end,
     name = "heirline_tabline_buffer_callback",
   },
-  TablineBufnr,
   FileIcon, -- turns out the version defined in #crash-course-part-ii-filename-and-friends can be reutilized as is here!
   TablineFileName,
   TablineFileFlags,
